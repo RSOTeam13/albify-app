@@ -1,2 +1,2 @@
-# albify-app
+# Albify applciation
 Front end application of Albify app.
