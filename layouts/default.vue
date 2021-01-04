@@ -1,10 +1,68 @@
 <template>
-  <div>
-    <Nuxt />
+  <div id="app">
+    <Slide :isOpen="this.sideMenu" disableOutsideClick noOverlay>
+      <nuxt-link to="/" class="mt-3">
+        <i class="fa fa-folder-open fa-md pt-1 mr-2 icon-nav"></i><span>Albums</span>
+      </nuxt-link>
+      <nuxt-link to="/images" class="mt-3">
+        <i class="fa fa-images fa-md pt-1 mr-2 icon-nav"></i><span>Images</span>
+      </nuxt-link>
+      <nuxt-link to="/shared" class="mt-3">
+        <i class="fa fa-heart fa-md pt-1 mr-2 icon-nav"></i><span>Shared</span>
+      </nuxt-link>
+    </Slide>
+    <b-navbar class="nav" fixed="top">
+      <div style="font-size: 0.8rem;">
+        <i @click="toggleSideMenu()" class="menu-icon mr-3 side-nav-ic fa fa-bars fa-lg"></i>
+      </div>
+      <b-navbar-brand>
+        <nuxt-link to="/">
+          <img src="/img/logo-dark.png" width="90" height="40" class="d-inline-block align-top" alt="logo">
+        </nuxt-link>
+      </b-navbar-brand>
+    </b-navbar>
+    <Nuxt id="page-wrap"/>
   </div>
 </template>
 
+<script>
+import { Slide } from 'vue-burger-menu'
+
+export default {
+  components: {
+    Slide
+  },
+  data () {
+    return {
+      sideMenu: false,
+    }
+  },
+  methods: {
+    toggleSideMenu() {
+      this.sideMenu = !this.sideMenu
+      console.log(this.sideMenu)
+    }
+  }
+}
+</script>
+
 <style>
+.nav {
+  z-index: 1000;
+  background-color: white;
+  border-bottom: 0.5px solid #a745c4;
+}
+
+.menu-icon {
+  cursor: pointer;
+}
+
+.icon-nav {
+  color: white;
+}
+
+
+
 html {
   font-family:
     'Source Sans Pro',

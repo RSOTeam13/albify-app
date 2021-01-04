@@ -20,6 +20,7 @@
 import GoogleLogin from 'vue-google-login'
 
 export default {
+  layout: 'no-navigation',
   data () {
     return {
       googleLoginParams: {
