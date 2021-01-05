@@ -20,6 +20,15 @@
           <img src="/img/logo-dark.png" width="85" height="45" class="d-inline-block align-top" alt="logo">
         </nuxt-link>
       </b-navbar-brand>
+
+       <b-navbar-nav v-if="user && user.firstName && user.lastName" class="ml-auto">
+          <b-nav-item-dropdown right>
+          <template #button-content>
+            <em>{{ user.firstName }} {{ user.lastName }}</em>
+          </template>
+          <b-dropdown-item @click="logOut()">Log Out</b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
     </b-navbar>
     <Nuxt id="page-wrap"/>
   </div>
@@ -35,7 +44,11 @@ export default {
   data () {
     return {
       sideMenu: false,
+      user: null
     }
+  },
+  mounted() {
+    this.user = !!localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
   },
   methods: {
     toggleSideMenu() {
@@ -44,6 +57,10 @@ export default {
     },
     handleCloseMenu() {
       this.sideMenu = false
+    },
+    logOut() {
+      localStorage.clear()
+      this.$router.replace('/login')
     }
   }
 }

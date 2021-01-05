@@ -1,13 +1,16 @@
 <template>
   <div>  
     <div class="container text-left mt-5">
-      <div class="row mt-5 pt-5">
+      <div class="row mt-5 pt-5" v-if="albums.length > 0">
         <div v-for="(album) in albums" :key="album.id" class="col-4 pb-4 album-box">
           <b-card :title="album.name" :sub-title="album.createdAt">
             <b-button v-if="album.images && album.images.length > 0" @click="showAlbumImages(album)" class="mt-3" size="sm">Open</b-button>
             <b-button @click="removeAlbum(album.id)" class="mt-3" size="sm">Remove</b-button>
           </b-card>
         </div>
+      </div>
+      <div v-else class="mt-5 pt-5">
+        You haven't created any albums yet.
       </div>
     </div>
     <div class="fab" v-b-modal.modal-create-album>
@@ -52,7 +55,7 @@
       </template>
 
       <div class="row mt-2" v-if="selectedAlbumImages.length > 0">
-        <div v-for="(image) in selectedAlbumImages" :key="image.id" class="col-4 pb-4 album-box">
+        <div v-for="(image) in selectedAlbumImages" :key="image.id" class="col-4 pb-4">
           <b-card>
             <img :src="image.url" width="100%" height="100%"/>
             <b-button @click="removeImageFromAlbum(selectedAlbum.id, image.id)" class="mt-3" size="sm">Remove</b-button>
@@ -221,6 +224,10 @@ export default {
   box-shadow: 2px 2px 3px #999;
   font-size: 50px;
   cursor: pointer;
+}
+
+.album-box {
+  min-width: 340px;
 }
 
 </style>

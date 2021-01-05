@@ -1,7 +1,7 @@
 <template>
   <div class="mt-5">
-    <div class="row mt-5 pt-5 pl-5 pr-5">
-      <div v-for="(image) in images" :key="image.id" class="col-4 pb-4 album-box">
+    <div class="row mt-5 pt-5 pl-5 pr-5" v-if="images.length > 0">
+      <div v-for="(image) in images" :key="image.id" class="col-12 col-lg-6 col-xl-4 pb-4 image-box">
         <b-card>
           <img :src="image.url" width="100%" height="100%"/>
           <b-button @click="removeImage(image.id)" class="mt-3" size="sm">Remove</b-button>
@@ -13,6 +13,9 @@
           </b-badge>
         </b-card>
       </div>
+    </div>
+    <div v-else class="container">
+      You haven't uploaded any images yet.
     </div>
 
     <b-modal
@@ -163,36 +166,8 @@ export default {
 
 .container {
   display: flex;
+  justify-content: center;
   align-items: center;
-}
-
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+  margin-top: 150px;
 }
 </style>

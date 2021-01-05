@@ -37,17 +37,24 @@ export default {
     GoogleLogin
   },
   methods: {
-    onSuccess (googleUser) {
+    async onSuccess (googleUser) {
       const token = googleUser.xc.id_token
       try {
-        // // TODO: Auth api call.
-        // const res = await this.$axios.post('/', {
-        //   token
-        // })
-        // localStorage.setItem('JWT', res.data.authToken);
-        this.$router.replace('/');
+        const res = await this.$axios.post('http://localhost:8082/v1/users/login', {
+          token
+        })
+        localStorage.setItem('JWT', res.data.authToken)
+        localStorage.setItem('user', JSON.stringify(res.data.user))
+        this.$router.replace('/')
       } catch (error) {
         console.log(error)
+
+        this.$bvToast.toast('There was an error while trying to log you in. Please try again.', {
+          title: 'Error',
+          toaster: 'b-toaster-bottom-right',
+          variant: 'danger',
+          solid: true,
+        })
       }
     },
     onFailure (err) {
