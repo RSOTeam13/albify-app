@@ -42,9 +42,9 @@ export default {
       try {
         // // TODO: Auth api call.
         // const res = await this.$axios.post('/', {
-
+        //   token
         // })
-        localStorage.setItem('JWT', token);
+        // localStorage.setItem('JWT', res.data.authToken);
         this.$router.replace('/');
       } catch (error) {
         console.log(error)

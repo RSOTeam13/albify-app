@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Slide :isOpen="this.sideMenu" disableOutsideClick noOverlay>
+    <Slide :isOpen="this.sideMenu" disableOutsideClick noOverlay :closeOnNavigation="true" @closeMenu="handleCloseMenu">
       <nuxt-link to="/" class="mt-3">
         <i class="fa fa-folder-open fa-md pt-1 mr-2 icon-nav"></i><span>Albums</span>
       </nuxt-link>
@@ -17,7 +17,7 @@
       </div>
       <b-navbar-brand>
         <nuxt-link to="/">
-          <img src="/img/logo-dark.png" width="90" height="40" class="d-inline-block align-top" alt="logo">
+          <img src="/img/logo-dark.png" width="85" height="45" class="d-inline-block align-top" alt="logo">
         </nuxt-link>
       </b-navbar-brand>
     </b-navbar>
@@ -41,6 +41,9 @@ export default {
     toggleSideMenu() {
       this.sideMenu = !this.sideMenu
       console.log(this.sideMenu)
+    },
+    handleCloseMenu() {
+      this.sideMenu = false
     }
   }
 }
