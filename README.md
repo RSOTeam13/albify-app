@@ -1,4 +1,4 @@
-# albify-app
+# Albify application
 
 ## Build Setup
 
