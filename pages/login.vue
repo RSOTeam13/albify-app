@@ -40,7 +40,7 @@ export default {
     async onSuccess (googleUser) {
       const token = googleUser.xc.id_token
       try {
-        const res = await this.$axios.post('http://localhost:8082/v1/users/login', {
+        const res = await this.$axios.post('/user-service/v1/users/login', {
           token
         })
         localStorage.setItem('JWT', res.data.authToken)

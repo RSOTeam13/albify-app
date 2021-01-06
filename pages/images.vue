@@ -1,21 +1,32 @@
 <template>
   <div class="mt-5">
-    <div class="row mt-5 pt-5 pl-5 pr-5" v-if="images.length > 0">
-      <div v-for="(image) in images" :key="image.id" class="col-12 col-lg-6 col-xl-4 pb-4 image-box">
+    <div v-if="loading" class="container">
+      <b-spinner style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
+    </div>
+    <div class="row images mt-5 pt-5 pl-5 pr-5" v-else-if="images.length > 0">
+      <div v-for="(image) in images" :key="image.id" class="col-12 col-lg-6 col-xl-4 pb-4">
         <b-card>
-          <img :src="image.url" width="100%" height="100%"/>
-          <b-button @click="removeImage(image.id)" class="mt-3" size="sm">Remove</b-button>
+          <img :src="image.url" width="100%" height="100%" class="image-box"/>
+          <b-button @click="removeImage(image.id)" class="mt-3 ml-3" size="sm">Remove</b-button>
           <b-button @click="addImageToAlbumModal(image)" class="mt-3" size="sm">Add to album</b-button>
           <b-button v-if="image.visible" @click="changeVisibility(image.id, false)" class="mt-3" size="sm">Make private</b-button>
           <b-button v-if="!image.visible" @click="changeVisibility(image.id, true)" class="mt-3" size="sm">Make public</b-button>
-          <b-badge v-for="(tag, idx) in image.tags" :key="idx" variant="success" class="mr-1">
-            {{ tag }}
-          </b-badge>
+          <br>
+          <div class="mr-3 ml-3 mt-2">
+            <b-badge v-for="(tag, idx) in image.tags" :key="idx" variant="success" class="mr-1">
+              {{ tag }}
+            </b-badge>
+          </div>
         </b-card>
       </div>
     </div>
     <div v-else class="container">
       You haven't uploaded any images yet.
+    </div>
+
+    <input type="file" ref="file" accept="image/*" style="display: none" @change="uploadImage">
+    <div class="fab" @click="$refs.file.click()">
+      +
     </div>
 
     <b-modal
@@ -49,6 +60,7 @@ export default {
       albums: [],
       selectedImage: {},
       selectedImageAlbums: [],
+      loading: false,
     }
   },
   async mounted () {
@@ -57,16 +69,19 @@ export default {
   },
   methods: {
     async getImages() {
+      this.loading = true
       try {
-        const res = await this.$axios.get('http://localhost:8081/v1/images')
+        const res = await this.$axios.get('/image-service/v1/images')
         this.images = res.data
       } catch (error) {
         console.log(error)
+      } finally {
+        this.loading = false
       }
     },
     async getAlbums() {
       try {
-        const res = await this.$axios.get('/albums')
+        const res = await this.$axios.get('/album-service/v1/albums')
         this.albums = res.data
       } catch (error) {
         console.log(error)
@@ -74,7 +89,7 @@ export default {
     },
     async removeImage(id) {
       try {
-        const res = await this.$axios.delete(`http://localhost:8081/v1/images/${id}`)
+        const res = await this.$axios.delete(`/image-service/v1/images/${id}`)
         this.images = this.images.filter((i) => i.id !== id)
 
         this.$bvToast.toast('Image was removed successfully!', {
@@ -109,7 +124,7 @@ export default {
     },
     async addImageToAlbum(albumId) {
       try {
-        const res = await this.$axios.put(`/albums/${albumId}/images`, {
+        const res = await this.$axios.put(`/album-service/v1/albums/${albumId}/images`, {
           id: this.selectedImage.id
         })
 
@@ -135,7 +150,7 @@ export default {
     },
     async changeVisibility(imageId, visible) {
        try {
-        const res = await this.$axios.put(`http://localhost:8081/v1/images/${imageId}/visibility?visible=${visible}`)
+        const res = await this.$axios.put(`/image-service/v1/images/${imageId}/visibility?visible=${visible}`)
         await this.getImages()
 
         this.$bvToast.toast('Image visibility was successfully updated!', {
@@ -154,12 +169,47 @@ export default {
           solid: true,
         })
       }
-    }
+    },
+    async uploadImage(event) {
+      const file = event.target.files && event.target.files[0] ? event.target.files[0] : null;
+      const extension = file.name.slice(file.name.lastIndexOf('.') + 1);
+
+      console.log(file.type)
+      console.log(file.mimeType)
+      try {
+        const res = await this.$axios.post('/upload-image-service/v1/upload',  file, {
+          headers: {
+            'Content-Type': 'application/octet-stream',     
+          },
+        });
+        await this.getImages()
+        this.$bvToast.toast('Image was successfully uploaded!', {
+          title: 'Success',
+          toaster: 'b-toaster-bottom-right',
+          variant: 'success',
+          solid: true,
+        })
+        
+      } catch (error) {
+        console.log(error)
+
+        this.$bvToast.toast('There was an error while uploading image.', {
+          title: 'Error',
+          toaster: 'b-toaster-bottom-right',
+          variant: 'danger',
+          solid: true,
+        })
+      }
+    },
   }
 }
 </script>
 
 <style scoped>
+.images {
+  background: #f6f6f6;
+}
+
 .select-album {
   cursor: pointer;
 }
@@ -169,5 +219,27 @@ export default {
   justify-content: center;
   align-items: center;
   margin-top: 150px;
+}
+
+.fab {
+  z-index: 900;
+	position: fixed;
+	width: 4rem;
+	height: 4rem;
+	bottom: 2.3rem;
+	right: 2.3rem;
+	background-color: #a745c4;
+	color: white;
+	border-radius: 50px;
+	text-align: center;
+  box-shadow: 2px 2px 3px #999;
+  font-size: 50px;
+  cursor: pointer;
+}
+
+.images .card-body {
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 </style>

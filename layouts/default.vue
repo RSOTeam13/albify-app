@@ -53,7 +53,6 @@ export default {
   methods: {
     toggleSideMenu() {
       this.sideMenu = !this.sideMenu
-      console.log(this.sideMenu)
     },
     handleCloseMenu() {
       this.sideMenu = false

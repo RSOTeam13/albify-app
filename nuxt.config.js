@@ -35,6 +35,7 @@ export default {
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
     '~/plugins/axios.js',
+    '~/plugins/apollo-overrides',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -51,12 +52,21 @@ export default {
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/apollo',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://localhost:8080/v1'
+    baseURL: 'http://rso13.bercithebeast.com'
+  },
+
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint: 'http://rso13.bercithebeast.com/comment-service/graphql',
+      }
+    },
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)

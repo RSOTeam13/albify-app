@@ -1,7 +1,10 @@
 <template>
-  <div>  
+  <div class="back">  
     <div class="container text-left mt-5">
-      <div class="row mt-5 pt-5" v-if="albums.length > 0">
+    <div v-if="loading" class="container mt-5 pt-5">
+      <b-spinner style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
+    </div>
+      <div class="row mt-5 pt-5" v-else-if="albums.length > 0">
         <div v-for="(album) in albums" :key="album.id" class="col-4 pb-4 album-box">
           <b-card :title="album.name" :sub-title="album.createdAt">
             <b-button v-if="album.images && album.images.length > 0" @click="showAlbumImages(album)" class="mt-3" size="sm">Open</b-button>
@@ -54,11 +57,11 @@
         <span>Album {{ selectedAlbum.name }} images</span>
       </template>
 
-      <div class="row mt-2" v-if="selectedAlbumImages.length > 0">
+      <div class="row images mt-2" v-if="selectedAlbumImages.length > 0">
         <div v-for="(image) in selectedAlbumImages" :key="image.id" class="col-4 pb-4">
           <b-card>
             <img :src="image.url" width="100%" height="100%"/>
-            <b-button @click="removeImageFromAlbum(selectedAlbum.id, image.id)" class="mt-3" size="sm">Remove</b-button>
+            <b-button @click="removeImageFromAlbum(selectedAlbum.id, image.id)" class="mt-3 ml-3" size="sm">Remove</b-button>
           </b-card>
         </div>
       </div>
@@ -78,6 +81,7 @@ export default {
       newAlbumNameState: null,
       selectedAlbum: {},
       selectedAlbumImages: [],
+      loading: false,
     }
   },
   async mounted () {
@@ -85,11 +89,14 @@ export default {
   },
   methods: {
     async getAlbums() {
+      this.loading = true
       try {
-        const res = await this.$axios.get('/albums')
+        const res = await this.$axios.get('/album-service/v1/albums')
         this.albums = res.data
       } catch (error) {
         console.log(error)
+      } finally {
+        this.loading = false
       }
     },
     checkFormValidity() {
@@ -113,7 +120,7 @@ export default {
       }
 
       try {
-        const res = await this.$axios.post('/albums', {
+        const res = await this.$axios.post('/album-service/v1/albums', {
           name: this.newAlbumName
         })
 
@@ -141,7 +148,7 @@ export default {
       this.selectedAlbum = album
       
       try {
-        const res = await this.$axios.get(`/albums/${this.selectedAlbum.id}/images`)
+        const res = await this.$axios.get(`/album-service/v1/albums/${this.selectedAlbum.id}/images`)
         this.selectedAlbumImages = res.data
         this.$bvModal.show('modal-show-album')
       } catch (error) {
@@ -157,7 +164,7 @@ export default {
     },
     async removeAlbum(id) {
       try {
-        const res = await this.$axios.delete(`/albums/${id}`)
+        const res = await this.$axios.delete(`/album-service/v1/albums/${id}`)
         this.albums = this.albums.filter((a) => a.id !== id)
 
         this.$bvToast.toast('Album was removed successfully!', {
@@ -179,7 +186,7 @@ export default {
     },
     async removeImageFromAlbum(albumId, imageId) {
       try {
-        const res = await this.$axios.delete(`/albums/${albumId}/images/${imageId}`)
+        const res = await this.$axios.delete(`/album-service/v1/albums/${albumId}/images/${imageId}`)
         this.selectedAlbumImages = this.selectedAlbumImages.filter((i) => i.id !== imageId)
 
          this.$bvToast.toast('Image was removed successfully!', {
@@ -204,6 +211,17 @@ export default {
 </script>
 
 <style scoped>
+.images .card-body {
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.back {
+  background: #f6f6f6;
+  height: 100vh;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -229,5 +247,4 @@ export default {
 .album-box {
   min-width: 340px;
 }
-
 </style>
