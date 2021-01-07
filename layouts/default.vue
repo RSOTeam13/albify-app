@@ -11,7 +11,7 @@
         <i class="fa fa-heart fa-md pt-1 mr-2 icon-nav"></i><span>Shared</span>
       </nuxt-link>
       <nuxt-link to="/demo" class="mt-3">
-        <i class="fa fa-heart fa-md pt-1 mr-2 icon-nav"></i><span>Demo</span>
+        <i class="fa fa-cogs fa-md pt-1 mr-2 icon-nav"></i><span>Demo</span>
       </nuxt-link>
     </Slide>
     <b-navbar class="nav" fixed="top">
