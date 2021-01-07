@@ -23,6 +23,8 @@ const responseInterceptor = (app) => {
         return
       }
     }
+    // console.log('axios error', error);
+    // console.log('axios error res', error.response);
     return Promise.reject(error)
   })
 }
