@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     async onSuccess (googleUser) {
-      const token = googleUser.xc.id_token
+      const token = googleUser.Bc.id_token
       try {
         const res = await this.$axios.post('/user-service/v1/users/login', {
           token
